@@ -1,4 +1,6 @@
 import copy
+import sys
+sys.setrecursionlimit(1000000)
 
 # 快速排序
 def quickSort(array,l=0,r=-1):
@@ -95,6 +97,43 @@ def radixSort(array):
         s*=10
     return array
 
+# 归并排序
+def mergeSort(array,n):
+    def f(array,n,l,r):
+        if r-l<n or n==1:
+            for i in range(l,r):
+                m=array[i]
+                th=i
+                for j in range(i+1,r):
+                    if array[j]<m:
+                        m=array[j]
+                        th=j
+                array[i],array[th]=array[th],array[i]
+            return
+        x=int((r-l)/n)
+        for i in range(n-1):
+            f(array,n,l+x*i,l+x*(i+1))
+        f(array, n, l + x * (n-1), r)
+        a=[]
+        nl=[0]*n
+        while sum(nl)<r-l:
+            th=-1
+            k=-1
+            m=float('inf')
+            for i,j in enumerate(nl):
+                t=i*x+j+l
+                if (j<x or i==n-1) and t<r and array[t]<m:
+                    m=array[t]
+                    th=t
+                    k=i
+            if th>=0:
+                nl[k]+=1
+                a.append(array[th])
+        for i in range(l,r):
+            array[i]=a[i-l]
+    f(array,n,0,len(array))
+    return array
+
 # 红黑树
 
 # 哈希表
@@ -154,3 +193,7 @@ if __name__=="__main__":
     # 基数排序
     array = [9, 8, 3, 9, 100,1000,102, 2, 7, 5, 5,99]
     print(radixSort(array))
+
+    # 归并排序
+    array = [9, 8, 3, 9, 100,1000,102, 2, 7, 5, 5,99]
+    print(mergeSort(array,2))
